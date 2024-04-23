@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Csengetési rend</title>
+</head>
+
+<body>
+
+    <body class="bg-gray-100 h-screen flex flex-col justify-center items-center">
+        <div class="max-w-lg w-full p-8 bg-white rounded-lg shadow-md">
+
+            <div class="flex items-center mb-4 gap-5 justify-around flex-wrap border-b-2">
+                <span>
+                    <input id="h45" type="radio"  name="duration" checked value="h45"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="h45"
+                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Normál(45')</label>
+                </span>
+                <span>
+                    <input id="h40" type="radio"  name="duration" value="h40"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="h40"
+                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Rövidített(40')</label>
+                </span>
+                <span>
+                    <input id="h35" type="radio"  name="duration" value="h35"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="h35"
+                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Rövidített(35')</label>
+                </span>
+            </div>
+
+            <h1 class="text-3xl font-bold mb-4 text-center"></h1>
+            <div id="console" class="overflow-y-auto max-h-60 mb-4 text-center"></div>
+            <button id="refreshBtn"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Frissítés</button>
+        </div>
+        <script src="data_radio.js"></script>
+        <script>
+            const consoleDiv = document.getElementById('console');
+            let bellShedule=[]
+
+            document.getElementById('refreshBtn').addEventListener('click', refresh);
+
+            // Függvény az aktuális idő stringjének létrehozására "óra:perc" formátumban
+            function getCurrentTimeHourMinuteString() {
+                let now = new Date();
+                console.log(now);
+                let hours = now.getHours().toString().padStart(2, '0'); // Az órákat két számjeggyé formázzuk
+                let minutes = now.getMinutes().toString().padStart(2, '0'); // A perceket is két számjeggyé formázzuk
+                return `${hours}:${minutes}`;
+            }
+            function refresh() {
+                let selectedValue = document.querySelector('input[name="duration"]:checked').value
+                console.log(selectedValue);
+                bellShedule = bellShedules[selectedValue]
+                console.log(bellShedule);
+                // Az aktuális idő stringjének lekérése
+                let currentTimeString = getCurrentTimeHourMinuteString();
+                //currentTimeString="09:11"
+
+                document.querySelector('h1').innerHTML = currentTimeString
+                let current = bellShedule.find(obj => currentTimeString >= obj.from && currentTimeString <= obj.to)
+
+                if (current) {
+                    consoleDiv.innerHTML = `<p class="text-gray-700">Most van a <span class="text-indigo-600 text-2xl">${current.id}</span>. óra és <span class="text-indigo-800 text-2xl">${current.to}</span>-ig tart.</p>`;
+                } else {
+                    let next = bellShedule.find(obj => currentTimeString < obj.from);
+                    if(next)
+                        consoleDiv.innerHTML = `<p class="text-gray-700">Szünet van. A <span class="text-indigo-800 text-2xl">${next.id}</span>. óra következik: <span class="text-indigo-800 text-2xl">${next.from}</span>-tól.</p>`;
+                    else
+                        consoleDiv.innerHTML = `<p class="text-gray-700">nincs információ...</p>`
+                }
+            }
+        </script>
+    </body>
+
+</html>
