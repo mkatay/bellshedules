@@ -10,7 +10,7 @@
 
 <body>
 
-    <body class="bg-gray-100 h-screen flex flex-col justify-center items-center">
+    <body class="bg-gray-800 h-screen flex flex-col justify-center items-center">
         <div class="max-w-lg w-full p-8 bg-white rounded-lg shadow-md">
 
             <div class="flex items-center mb-4 gap-5 justify-around flex-wrap border-b-2">
@@ -43,6 +43,8 @@
         <script>
             const consoleDiv = document.getElementById('console');
             let bellShedule=[]
+            //az oldal betöltődésekor a normál eset jelenjen meg:
+            refresh()
 
             document.getElementById('refreshBtn').addEventListener('click', refresh);
 
